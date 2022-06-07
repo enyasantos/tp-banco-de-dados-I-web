@@ -3,10 +3,11 @@ import Head from 'next/head'
 import Link from 'next/link'
 import AirplanemodeActiveIcon from '@mui/icons-material/AirplanemodeActive';
 import AirplaneTicketIcon from '@mui/icons-material/AirplaneTicket';
+import PeopleIcon from '@mui/icons-material/People';
 import HailIcon from '@mui/icons-material/Hail';
 import styles from '../styles/Home.module.css'
 import { ReactElement } from 'react';
-import Footer from '../components/Fotter';
+import Footer from '../components/Footer';
 
 function Card(props: {
   icon: ReactElement<any, any>,
@@ -49,26 +50,40 @@ const Home: NextPage = () => {
         </header>
 
       <main className={styles.main}>
-        <section className={styles.grid}>
-          <Card 
-            icon={<AirplanemodeActiveIcon fontSize='large'/>}
-            title='Voos'
-            description='Gerencie os voos do sistema'
-            redirect='/voos'
-          />
-          <Card 
-            icon={<HailIcon fontSize='large'/>}
-            title='Passageiros'
-            description='Gerencie os passageiros do sistema'
-            redirect='/passageiros'
-          />
-          <Card 
-            icon={<AirplaneTicketIcon fontSize='large'/>}
-            title='Passagens'
-            description='Gerencie as passagens do sistema'
-            redirect='/passagens'
-          />
-
+        <section className={styles.row}>
+          <h2>Visualizar</h2>
+          <div className={styles.grid}>
+            <Card 
+              icon={<AirplanemodeActiveIcon fontSize='large'/>}
+              title='Voos'
+              description='Gerencie os voos do sistema'
+              redirect='/voos'
+            />
+            <Card 
+              icon={<PeopleIcon fontSize='large'/>}
+              title='Passageiros'
+              description='Gerencie os passageiros do sistema'
+              redirect='/passageiros'
+            />
+            <Card 
+              icon={<AirplaneTicketIcon fontSize='large'/>}
+              title='Passagens'
+              description='Gerencie as passagens do sistema'
+              redirect='/passagens'
+            />
+          </div>
+        </section>
+        <div className={styles.divider}></div>
+        <section className={styles.row}>
+          <h2>Cadastrar</h2>
+          <div className={[styles.grid, styles.grid__1].join(" ")}>
+            <Card 
+              icon={<HailIcon fontSize='large'/>}
+              title='Passageiros'
+              description='Cadastre novos passageiros no sistema'
+              redirect='/passageiro/cadastro'
+            />
+          </div>
         </section>
       </main>
 
