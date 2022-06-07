@@ -2,18 +2,30 @@ import Head from 'next/head'
 import Footer from '../components/Footer'
 import Header from '../components/Header'
 import styles from '../styles/Passageiros.module.css'
-import MUIDataTable from 'mui-datatables';
-import { data } from '../data/data';
-import Table from '../components/Table';
+import { api } from '../service/api';
+import { useEffect, useState } from 'react';
+import TablePassageiro from '../components/TablePassageiro';
 
 export default function Passageiros() {
+
+    const [passageiros, setPassageiros] = useState<any[]>([])
+    const [alterPassageiro, setAlterPassageiro] = useState(0)
+
     const columns = [
-        'Id',
-        'Title',
-        'Author',
-        'Page Count',
-        'Rating',
+        'CPF',
+        'Nome',
+        'Sexo',
+        'RG',
+        'Data de Nascimento',
     ];
+
+
+    useEffect(() => {
+        api.get('passageiros').then((response) => {
+            setPassageiros(response.data);
+        })
+    }, [alterPassageiro]);
+
     return (
         <div className={styles.container}>
             <Head>
@@ -23,7 +35,12 @@ export default function Passageiros() {
             </Head>
             <Header title="Passageiros"/>
             <div className={styles.content}>
-                <Table columns={columns} data={data}/>
+                <TablePassageiro 
+                    columns={columns} 
+                    data={passageiros} 
+                    setAlterPassageiro={setAlterPassageiro}
+                    alterPassageiro={alterPassageiro}
+                />
             </div>
             <Footer/>
         </div>

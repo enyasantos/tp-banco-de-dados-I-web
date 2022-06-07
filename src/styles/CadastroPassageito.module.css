@@ -76,3 +76,11 @@
 .phones > div > input {
     width: 100%;
 }
+
+.error {
+    color: #ce0808;
+    text-align: start;
+    width: 700px;
+    font-size: 14px;
+    text-transform: uppercase;
+}

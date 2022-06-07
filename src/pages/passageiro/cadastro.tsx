@@ -4,6 +4,7 @@ import Header from '../../components/Header'
 import Select from 'react-select';
 import InputMask from "react-input-mask";
 import MaskedInput from 'react-maskedinput';
+import { api } from '../../service/api'
 
 import styles from '../../styles/CadastroPassageito.module.css'
 import { ChangeEvent, FormEvent, useEffect, useState } from 'react';
@@ -19,6 +20,9 @@ export default function CadastroPassageiro() {
     const [phone1, setPhone1] = useState('');
     const [phone2, setPhone2] = useState('');
 
+    const [error, setError] = useState(false);
+
+
     const options = [
         { value: 'Feminino', label: 'Feminino' },
         { value: 'Masculino', label: 'Masculino' },
@@ -32,14 +36,26 @@ export default function CadastroPassageiro() {
             nome,
             sexo,
             data_nascimento: dataNascimento,
-            telefones: phone2 ? [phone1.replace(/[^\w\s]/gi, ''), phone2.replace(/[^\w\s]/gi, '')] : [ phone1.replace(/[^\w\s]/gi, '') ],
+            telefones: phone2 ? [
+                phone1.replace(/[^\w\s]/gi, '').split(" ").join(''), 
+                phone2.replace(/[^\w\s]/gi, '').split(" ").join('')
+            ] : [ 
+                phone1.replace(/[^\w\s]/gi, '').split(" ").join('')
+            ],
         }
 
-        setNome('');
-        setCpf('');
-        setRg('');
-        setDataNascimento('');
-        setSexo('');
+        api.post('passageiro', data).then((response) => {
+            setNome('');
+            setCpf('');
+            setRg('');
+            setDataNascimento('');
+            setSexo('');
+            setPhone1('');
+            setPhone2('');
+            setError(false);
+        }).catch(() => {
+            setError(true);
+        })
     }
 
     return (
@@ -52,6 +68,7 @@ export default function CadastroPassageiro() {
             <Header title="Cadastro de Passageiros"/>
             <div className={styles.content}>
                 <h2>Cadastrar</h2>
+                {error && <p className={styles.error}>Algo deu errado*</p>}
                 <form className={styles.form} onSubmit={handleSubmit}>
                    <div>
                     <label htmlFor="nome">Nome*</label>
@@ -89,12 +106,12 @@ export default function CadastroPassageiro() {
                     <div className={styles.phones}>
                         <div>
                             <label htmlFor="telefone-1">Telefone 1*</label>
-                            < InputMask name="telefone-1" mask="(99) 99999-9999" value={phone1} onChange={(e) => setPhone1(e.target.value)} required/>
+                            < InputMask name="telefone-1" mask="(99) 9999-9999" value={phone1} onChange={(e) => setPhone1(e.target.value)} required/>
                         </div>
 
                         <div>
                             <label htmlFor="telefone-2">Telefone 2</label>
-                            < InputMask name="telefone-2" mask="(99) 99999-9999" value={phone2} onChange={(e) => setPhone2(e.target.value)}/>
+                            < InputMask name="telefone-2" mask="(99) 9999-9999" value={phone2} onChange={(e) => setPhone2(e.target.value)}/>
                         </div>
                     </div>
 
