@@ -1,9 +1,35 @@
 import Head from 'next/head'
+import { useEffect, useState } from 'react'
 import Footer from '../components/Footer'
 import Header from '../components/Header'
+import TablePassagem from '../components/TablePassagem'
+import { api } from '../service/api'
 import styles from '../styles/Passagens.module.css'
 
 export default function Passagens() {
+    
+    const [voos, setVoos] = useState<any[]>([])
+    const [alterVoo, setAlterVoo] = useState(0)
+
+    const columns = [
+        'Código',
+        'Data de Emissão',
+        'Assento',
+        'Código do Voo',
+        'Código do Pagamento',
+        'Cpf do Passageiro',
+        'Código da Bagagem',
+        'Peso da Bagagem',
+        'Nome do Pet',
+        'Cor do Pet'
+    ];
+
+    useEffect(() => {
+        api.get('passagens').then((response) => {
+            setVoos(response.data);
+        })
+    }, [alterVoo]);
+
     return (
         <div className={styles.container}>
             <Head>
@@ -13,7 +39,12 @@ export default function Passagens() {
             </Head>
             <Header title="Passagens"/>
             <div className={styles.content}>
-
+                <TablePassagem
+                    columns={columns}
+                    data={voos}
+                    setAlterData={setAlterVoo}
+                    alterData={alterVoo}
+                />
             </div>
             <Footer/>
         </div>

@@ -1,9 +1,34 @@
 import Head from 'next/head'
+import { useEffect, useState } from 'react';
 import Footer from '../components/Footer'
 import Header from '../components/Header'
+import TableVoo from '../components/TableVoo';
+import { api } from '../service/api';
 import styles from '../styles/Voos.module.css'
 
 export default function Voos() {
+
+    const [voos, setVoos] = useState<any[]>([])
+    const [alterVoo, setAlterVoo] = useState(0)
+
+    const columns = [
+        'Código',
+        'Registro',
+        'Cpf Piloto',
+        'Código Itinerario',
+        'Data',
+        'Cpf Comissario',
+        'Tempo de Duração (min)',
+        'Aeroporto Origem',
+        'Aeroporto Destino'
+    ];
+
+    useEffect(() => {
+        api.get('voos').then((response) => {
+            setVoos(response.data);
+        })
+    }, [alterVoo]);
+
     return (
         <div className={styles.container}>
             <Head>
@@ -13,7 +38,12 @@ export default function Voos() {
             </Head>
             <Header title="Voos"/>
             <div className={styles.content}>
-
+                <TableVoo 
+                    columns={columns}
+                    data={voos}
+                    setAlterData={setAlterVoo}
+                    alterData={alterVoo}
+                />
             </div>
             <Footer/>
         </div>

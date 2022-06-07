@@ -3,28 +3,43 @@ import { Dispatch, SetStateAction, useEffect, useState } from 'react'
 import DeleteIcon from '@mui/icons-material/Delete';
 import SearchIcon from '@mui/icons-material/Search';
 import styles from './styles.module.css'
+import { api } from '../../service/api';
 
 type IProps = {
     columns: string[]
     data: any[]
+    setAlterData: Dispatch<SetStateAction<number>>
+    alterData: number
 }
 
-export default function Table({ columns, data }: IProps) {
+export default function TablePassagem({ setAlterData, alterData, columns, data }: IProps) {
 
     const [count] = useState(data.length);
+    const [allData, setAllData] = useState(data);
     const [rowSelected, setRowSelected] = useState<string[]>([]);
     const [allSelected, setAllSelected] = useState(false);
+    const [search, setSearch] = useState('');
 
     function handleDelete() {
-        console.log(rowSelected);
+        console.log('Not working ...')
     }
+
+    useEffect(() => {
+        if(search) {
+            api.get(`buscar-passagem/${search}`).then((response) => {
+                setAllData(response.data)
+            })
+        } else {
+            setAllData(data);
+        }
+    }, [data, search, alterData])
 
     return (
         <section className={styles.container}>
             <div className={styles.content}>
                 <header className={styles.header}>
                     <label className={styles.search}>
-                        <input type="text" />
+                        <input type="text" value={search} onChange={(e) => { setSearch(e.target.value) }} />
                         <SearchIcon />
                     </label>
                     {rowSelected.length > 0 && (
@@ -43,13 +58,17 @@ export default function Table({ columns, data }: IProps) {
                                     }}/>
                                 </label>
                             </th>
-                            {columns.map((column) => (
-                                <th scope="col" key={column}>{column}</th>
+                            {columns.map((column, index) => (
+                                !search ? (
+                                    index < 6 && (<th scope="col" key={column}>{column}</th>)
+                                ) : (
+                                    <th scope="col" key={column}>{column}</th>
+                                )
                             ))}
                         </tr>
                     </thead>
                     <tbody>
-                        {data.map((d, index) => (
+                        {allData.map((d, index) => (
                         <Row 
                             key={d.id}
                             count={count}
@@ -58,6 +77,7 @@ export default function Table({ columns, data }: IProps) {
                             rowSelected={rowSelected}
                             setRowSelected={setRowSelected}
                             allSelected={allSelected}
+                            search={search}
                         />
                         ))}
                     </tbody>
@@ -74,19 +94,26 @@ function Row(props: {
     rowSelected: string[],
     setRowSelected: Dispatch<SetStateAction<string[]>>
     allSelected: boolean
+    search: string
 }) {
     const [selected, setSelected] = useState(false);
+
+    function convertData(data: string) {
+        const data_americana = data;
+        const data_brasileira = data_americana.split('-');
+        return `${data_brasileira[2][0]}${data_brasileira[2][1]}/${data_brasileira[1]}/${data_brasileira[0]}`;
+    }
 
     useEffect(() => {
         let has = -1;
         if(props.rowSelected.length > 0 && props.allSelected) {
-            has = props.rowSelected.indexOf(props.d.id);
+            has = props.rowSelected.indexOf(props.d.cpf);
         }
 
         if(has === -1) {
             if(props.allSelected) {
                 setSelected(true);
-                props.setRowSelected((c) => [...c, props.d.id]);
+                props.setRowSelected((c) => [...c, props.d.cpf]);
             } else {
                 setSelected(false);
                 props.setRowSelected([]);
@@ -108,20 +135,32 @@ function Row(props: {
                         onChange={(e) => { 
                             setSelected(e.target.checked) 
                             if(e.target.checked) {
-                                props.setRowSelected((c) => [...c, props.d.id])
+                                props.setRowSelected((c) => [...c, props.d.cpf])
                             } else {
                                 props.setRowSelected((c) => c.filter((item) => {
-                                    return item !== props.d.id
+                                    return item !== props.d.cpf
                                 }))
                             }
                         }}/>
                     </label>
                 </th>
-                <th>{props.d.id}</th>
-                <td>{props.d.title}</td>
-                <td>{props.d.authors}</td>
-                <td>{props.d.num_pages}</td>
-                <td>{props.d.rating}</td>
+                <th>{props.d.codigo}</th>
+                <td>{convertData(props.d.data_emissao)}</td>
+                <td>{props.d.assento}</td>
+                <td>{props.d.codigo_voo}</td>
+                <td>{props.d.codigo_pagamento}</td>
+                <td>{props.d.cpf_passageiro}</td>
+                {
+                    props.search && (
+                        <>
+                            <th>{props.d.codigo_bagagem}</th>
+                            <th>{props.d.bagagem_peso}</th>
+                            <th>{props.d.pet_peso}</th>
+                            <th>{props.d.cor}</th>
+                            <th>{props.d.pet_nome}</th>
+                        </>
+                    )
+                }
             </tr>
             {props.index !== (props.count - 1) && (
                 <tr className={styles.spacer}>
