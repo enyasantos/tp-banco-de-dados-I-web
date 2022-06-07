@@ -27,13 +27,14 @@
     font-size: 16px;
 }
 
-.form > div {
+.form > div:not(.phones){
     display: flex;
     flex-direction: column;
     margin-top: 20px;
 }
 
-.form > div > label {
+.form > div > label,
+.phones > div > label {
     font-size: 16px;
     text-transform: uppercase;
     letter-spacing: .1rem;
@@ -57,4 +58,21 @@
 
 .form > button:hover {
     opacity: 0.8;
+}
+
+.phones {
+    width: 100%;
+    height: 100%;
+    display: flex;
+    justify-content: space-between;
+}
+
+.phones > div {
+    display: flex;
+    flex-direction: column;
+    margin-top: 20px;
+}
+
+.phones > div > input {
+    width: 100%;
 }

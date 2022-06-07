@@ -9,15 +9,15 @@ import styles from '../../styles/CadastroPassageito.module.css'
 import { ChangeEvent, FormEvent, useEffect, useState } from 'react';
 
 export default function CadastroPassageiro() {
-    const [age, setAge] = useState('');
 
     const [nome, setNome] = useState('');
     const [cpf, setCpf] = useState('');
-
     const [rg, setRg] = useState('');
     const [sexo, setSexo] = useState('');
     const [dataNascimento, setDataNascimento] = useState('');
 
+    const [phone1, setPhone1] = useState('');
+    const [phone2, setPhone2] = useState('');
 
     const options = [
         { value: 'Feminino', label: 'Feminino' },
@@ -31,7 +31,8 @@ export default function CadastroPassageiro() {
             rg: rg.replace(/[^\w\s]/gi, ''),
             nome,
             sexo,
-            data_nascimento: dataNascimento
+            data_nascimento: dataNascimento,
+            telefones: phone2 ? [phone1.replace(/[^\w\s]/gi, ''), phone2.replace(/[^\w\s]/gi, '')] : [ phone1.replace(/[^\w\s]/gi, '') ],
         }
 
         setNome('');
@@ -40,8 +41,6 @@ export default function CadastroPassageiro() {
         setDataNascimento('');
         setSexo('');
     }
-
-
 
     return (
         <div className={styles.container}>
@@ -55,22 +54,22 @@ export default function CadastroPassageiro() {
                 <h2>Cadastrar</h2>
                 <form className={styles.form} onSubmit={handleSubmit}>
                    <div>
-                    <label htmlFor="nome">Nome</label>
+                    <label htmlFor="nome">Nome*</label>
                     <input type="text" name="nome" value={nome} onChange={(e) => setNome(e.target.value)} required/>
                    </div>
 
                     <div>
-                        <label htmlFor="cpf">CPF</label>
+                        <label htmlFor="cpf">CPF*</label>
                         < InputMask name="cpf" mask="999.999.999-99" value={cpf} onChange={(e) => setCpf(e.target.value)} required/>
                     </div>
 
                     <div>
-                        <label htmlFor="rg">RG</label>
+                        <label htmlFor="rg">RG*</label>
                         <MaskedInput mask="AA-11.111.111" value={rg} onChange={(e) => setRg(e.target.value)} required/>
                     </div>
 
                     <div>
-                        <label htmlFor="sexo">Sexo</label>
+                        <label htmlFor="sexo">Sexo*</label>
                         <Select
                             className="basic-single"
                             classNamePrefix="select"
@@ -83,8 +82,20 @@ export default function CadastroPassageiro() {
                     </div>
 
                     <div>
-                        <label htmlFor="data__nascimento">Data de Nascimento</label>
+                        <label htmlFor="data__nascimento">Data de Nascimento*</label>
                         < InputMask name="data__nascimento" mask="99-99-9999" value={dataNascimento} onChange={(e) => setDataNascimento(e.target.value)} required/>
+                    </div>
+
+                    <div className={styles.phones}>
+                        <div>
+                            <label htmlFor="telefone-1">Telefone 1*</label>
+                            < InputMask name="telefone-1" mask="(99) 99999-9999" value={phone1} onChange={(e) => setPhone1(e.target.value)} required/>
+                        </div>
+
+                        <div>
+                            <label htmlFor="telefone-2">Telefone 2</label>
+                            < InputMask name="telefone-2" mask="(99) 99999-9999" value={phone2} onChange={(e) => setPhone2(e.target.value)}/>
+                        </div>
                     </div>
 
                     <button type='submit'>Cadastrar</button>
